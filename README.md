@@ -1,2 +1,6 @@
 # PROYECTO-1-TOPICOS
-Primer proyecto de Topicos de la programacion
+Desarrollo de Motor Analitico para Gestión de Vuelos
+
+Integrantes:
+Ricardo Coraspe
+Paulo Troncone
