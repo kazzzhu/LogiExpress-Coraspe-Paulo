@@ -1,0 +1,17 @@
+# Haskell
+*.o
+*.hi
+*.dyn_o
+*.dyn_hi
+dist-newstyle/
+.stack-work/
+haskell/Main
+haskell/Main.exe
+
+# Prolog
+*.qlf
+
+# Sistema y editores
+.DS_Store
+.vscode/
+.idea/
