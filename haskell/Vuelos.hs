@@ -25,3 +25,12 @@ separar c s = case break (== c) s of
 
 recortar :: String -> String
 recortar = dropWhileEnd isSpace . dropWhile isSpace
+
+horaAMin :: String -> Int
+horaAMin h = case separar ':' h of
+  [hh, mm] -> read hh * 60 + read mm
+  _        -> error ("Hora invalida: " ++ h)
+
+minAHora :: Int -> String
+minAHora m = dosDigitos (m `div` 60) ++ ":" ++ dosDigitos (m `mod` 60)
+  where dosDigitos n = (if n < 10 then "0" else "") ++ show n
