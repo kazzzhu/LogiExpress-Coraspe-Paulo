@@ -17,3 +17,11 @@ data Vuelo = Vuelo {
   } deriving (Show, Eq)
 
 type Grafo = [(Ciudad, [Vuelo])]
+
+separar :: Char -> String -> [String]
+separar c s = case break (== c) s of
+  (antes, [])        -> [antes]
+  (antes, _ : resto) -> antes : separar c resto
+
+recortar :: String -> String
+recortar = dropWhileEnd isSpace . dropWhile isSpace
