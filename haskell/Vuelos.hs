@@ -47,3 +47,14 @@ parsearVuelo linea = case map recortar (separar '|' linea) of
   [o, d, s, l, p, c, ds] ->
     Just (Vuelo o d (horaAMin s) (horaAMin l) (read p) c (parsearDias ds))
   _ -> Nothing
+
+cargarVuelos :: FilePath -> IO [Vuelo]
+cargarVuelos ruta = do
+  texto <- readFile ruta
+  return [v | Just v <- map parsearVuelo (lines texto)]
+
+construirGrafo :: [Vuelo] -> Grafo
+construirGrafo vs = [(c, [v | v <- vs, origen v == c]) | c <- nub (map origen vs)]
+
+ciudades :: [Vuelo] -> [Ciudad]
+ciudades vs = sort (nub (map origen vs ++ map destino vs))
