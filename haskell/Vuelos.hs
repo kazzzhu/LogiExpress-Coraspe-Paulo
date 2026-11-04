@@ -58,3 +58,9 @@ construirGrafo vs = [(c, [v | v <- vs, origen v == c]) | c <- nub (map origen vs
 
 ciudades :: [Vuelo] -> [Ciudad]
 ciudades vs = sort (nub (map origen vs ++ map destino vs))
+
+salidasDe :: Ciudad -> [Vuelo] -> [Vuelo]
+salidasDe c = filter ((== c) . origen)
+
+llegadasA :: Ciudad -> [Vuelo] -> [Vuelo]
+llegadasA c = filter ((== c) . destino)
