@@ -61,3 +61,17 @@ fijar_tmc(T) :-
     T >= 0,
     retractall(tmc(_)),
     assertz(tmc(T)).
+
+% Consultas por ciudad
+
+salidas(Ciudad, Codigos) :-
+    findall(C, vuelo(C, Ciudad, _, _, _, _, _), Codigos).
+
+llegadas(Ciudad, Codigos) :-
+    findall(C, vuelo(C, _, Ciudad, _, _, _, _), Codigos).
+
+ciudad(C) :- vuelo(_, C, _, _, _, _, _).
+ciudad(C) :- vuelo(_, _, C, _, _, _, _).
+
+ciudades(Lista) :-
+    setof(C, ciudad(C), Lista).
