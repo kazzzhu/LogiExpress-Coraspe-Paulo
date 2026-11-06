@@ -26,3 +26,16 @@ mergeSortBy f xs  = mezclar (mergeSortBy f izq) (mergeSortBy f der)
     mezclar (a : as') (b : bs)
       | f a <= f b = a : mezclar as' (b : bs)
       | otherwise  = b : mezclar (a : as') bs
+
+reporte :: Criterio -> [[Vuelo]] -> [[Vuelo]]
+reporte c = mergeSortBy (medida c)
+
+masBarata :: [[Vuelo]] -> Maybe [Vuelo]
+masBarata rs = case reporte Costo rs of
+  []      -> Nothing
+  (r : _) -> Just r
+
+masRapida :: [[Vuelo]] -> Maybe [Vuelo]
+masRapida rs = case reporte Tiempo rs of
+  []      -> Nothing
+  (r : _) -> Just r
