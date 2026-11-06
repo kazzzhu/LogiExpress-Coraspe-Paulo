@@ -23,3 +23,29 @@ dias(Texto, Dias) :-
 dia_atomo(Texto, Dia) :-
     string_lower(Texto, Minusculas),
     atom_string(Dia, Minusculas).
+
+% Lectura de vuelos.txt hacia la base de conocimientos
+
+% vuelo(Codigo, Origen, Destino, SalidaMin, LlegadaMin, Precio, Dias)
+:- dynamic vuelo/7.
+
+cargar_vuelos(Archivo) :-
+    retractall(vuelo(_, _, _, _, _, _, _)),
+    read_file_to_string(Archivo, Texto, []),
+    split_string(Texto, "\n", "\r ", Lineas),
+    exclude(==(""), Lineas, NoVacias),
+    maplist(guardar_vuelo, NoVacias).
+
+guardar_vuelo(Linea) :-
+    split_string(Linea, "|", " ", [O, D, S, L, P, C, Ds]),
+    atom_string(Origen, O),
+    atom_string(Destino, D),
+    hora_a_min(S, Salida),
+    hora_a_min(L, Llegada),
+    number_string(Precio, P),
+    atom_string(Codigo, C),
+    dias(Ds, Dias),
+    !,
+    assertz(vuelo(Codigo, Origen, Destino, Salida, Llegada, Precio, Dias)).
+guardar_vuelo(Linea) :-
+    format("Linea ignorada (formato invalido): ~w~n", [Linea]).
