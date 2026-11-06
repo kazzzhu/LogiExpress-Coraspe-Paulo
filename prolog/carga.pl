@@ -49,3 +49,15 @@ guardar_vuelo(Linea) :-
     assertz(vuelo(Codigo, Origen, Destino, Salida, Llegada, Precio, Dias)).
 guardar_vuelo(Linea) :-
     format("Linea ignorada (formato invalido): ~w~n", [Linea]).
+
+% Tiempo Minimo de Conexion (minutos)
+
+:- dynamic tmc/1.
+
+tmc(45).
+
+fijar_tmc(T) :-
+    integer(T),
+    T >= 0,
+    retractall(tmc(_)),
+    assertz(tmc(T)).
