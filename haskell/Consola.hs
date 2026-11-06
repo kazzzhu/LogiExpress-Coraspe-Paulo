@@ -28,3 +28,62 @@ mostrarRuta i r = do
 mostrarOptima :: String -> Maybe [Vuelo] -> IO ()
 mostrarOptima _ Nothing       = putStrLn "No hay rutas para ese dia."
 mostrarOptima titulo (Just r) = putStrLn ("\n" ++ titulo) >> mostrarRuta 1 r
+
+leer :: String -> IO String
+leer prompt = do
+  putStr prompt
+  hFlush stdout
+  fin <- isEOF
+  if fin then exitSuccess else fmap (unwords . words) getLine
+
+leerEntero :: String -> IO Int
+leerEntero prompt = do
+  s <- leer prompt
+  case reads s of
+    [(n, "")] | n >= 0 -> return n
+    _ -> putStrLn "Debe ser un entero mayor o igual a 0." >> leerEntero prompt
+
+leerCiudad :: [Vuelo] -> String -> IO Ciudad
+leerCiudad vs prompt = do
+  s <- leer prompt
+  case [c | c <- ciudades vs, map toLower c == map toLower s] of
+    (c : _) -> return c
+    [] -> do
+      putStrLn ("Ciudad no encontrada. Disponibles: " ++ intercalate ", " (ciudades vs))
+      leerCiudad vs prompt
+
+nombresDias :: [(String, Dia)]
+nombresDias =
+  [ ("lunes", "l"), ("martes", "m"), ("miercoles", "mi"), ("miércoles", "mi")
+  , ("jueves", "j"), ("viernes", "v"), ("sabado", "s"), ("sábado", "s")
+  , ("domingo", "d") ]
+
+leerDia :: IO Dia
+leerDia = do
+  s <- leer "Dia (lunes ... domingo): "
+  case lookup (map toLower s) nombresDias of
+    Just d  -> return d
+    Nothing -> putStrLn "Dia no valido." >> leerDia
+
+leerK :: IO (Maybe Int)
+leerK = do
+  s <- leer "Maximo de escalas K (Enter = sin limite): "
+  case reads s of
+    _ | null s -> return Nothing
+    [(n, "")] | n >= 0 -> return (Just n)
+    _ -> putStrLn "Debe ser un entero mayor o igual a 0." >> leerK
+
+leerCriterio :: IO Criterio
+leerCriterio = do
+  s <- leer "Ordenar por (costo/tiempo): "
+  case map toLower s of
+    "costo"  -> return Costo
+    "tiempo" -> return Tiempo
+    _        -> putStrLn "Escriba costo o tiempo." >> leerCriterio
+
+leerConsulta :: [Vuelo] -> IO (Ciudad, Ciudad, Dia)
+leerConsulta vs = do
+  o <- leerCiudad vs "Origen: "
+  d <- leerCiudad vs "Destino: "
+  dia <- leerDia
+  return (o, d, dia)
